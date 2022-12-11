@@ -5,7 +5,9 @@ import Spinner from '../app/shared/Spinner';
 
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 
-
+// Organization
+const LocationList = lazy(() => import('./organization/LocationList'));
+const LocationMaster = lazy(() => import('./organization/LocationMaster'));
 
 const Buttons = lazy(() => import('./basic-ui/Buttons'));
 const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
@@ -43,6 +45,10 @@ class AppRoutes extends Component {
       <Suspense fallback={<Spinner/>}>
         <Switch>
           <Route path="/dashboard" component={ Dashboard } />
+
+          {/* Organization */}
+          <Route path="/organization/location-list" component={ LocationList } />
+          <Route path="/organization/location-master" component={ LocationMaster } />
 
 
           <Route path="/basic-ui/buttons" component={ Buttons } />
