@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next';
 class Sidebar extends Component {
 
   state = {};
+  username = localStorage.getItem('firstname')+' '+localStorage.getItem('lastname')
 
   toggleMenuState(menuState) {
     if (this.state[menuState]) {
@@ -66,7 +67,7 @@ class Sidebar extends Component {
                 <span className="login-status online"></span> {/* change to offline or busy as needed */}
               </div>
               <div className="nav-profile-text">
-                <span className="font-weight-bold mb-2"><Trans>Lalit Sharlawar</Trans></span>
+                <span className="font-weight-bold mb-2"><Trans>{ this.username }</Trans></span>
                 <span className="text-secondary text-small"><Trans>Project Manager</Trans></span>
               </div>
               <i className="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
@@ -80,12 +81,13 @@ class Sidebar extends Component {
           </li>
           <li className={ this.isPathActive('/basic-ui') ? 'nav-item active' : 'nav-item' }>
             <div className={ this.state.basicUiMenuOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('basicUiMenuOpen') } data-toggle="collapse">
-              <span className="menu-title"><Trans>Organisation</Trans></span>
+              <span className="menu-title"><Trans>Organization</Trans></span>
               <i className="menu-arrow"></i>
               <i className="mdi mdi-crosshairs-gps menu-icon"></i>
             </div>
             <Collapse in={ this.state.basicUiMenuOpen }>
               <ul className="nav flex-column sub-menu">
+              <li className="nav-item"> <Link className={ this.isPathActive('/organization/location-list') ? 'nav-link active' : 'nav-link' } to="/organization/location-list"><Trans>Location</Trans></Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/basic-ui/buttons') ? 'nav-link active' : 'nav-link' } to="/basic-ui/buttons"><Trans>Department</Trans></Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/basic-ui/dropdowns') ? 'nav-link active' : 'nav-link' } to="/basic-ui/dropdowns"><Trans>Designation</Trans></Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/basic-ui/typography') ? 'nav-link active' : 'nav-link' } to="/basic-ui/typography"><Trans>Master</Trans></Link></li>

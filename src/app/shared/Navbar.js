@@ -2,8 +2,47 @@ import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
+import { Redirect } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 class Navbar extends Component {
+  constructor(props) {
+      super(props);
+
+      this.state = {
+          visible: false,
+          loggedIn : localStorage.getItem('token') ? false : true,
+          username : localStorage.getItem('firstname')+' '+localStorage.getItem('lastname')
+      };
+      this.confirmLogout = this.confirmLogout.bind(this)
+      this.redirect = this.redirect.bind(this)
+
+  }
+  confirmLogout(e)
+  {
+    e.preventDefault()
+    this.setState({
+      visible: !this.state.visible,
+    });
+  }
+
+  redirect(e){
+    localStorage.removeItem('token')
+    localStorage.removeItem('firstname')
+    localStorage.removeItem('lastname')
+    localStorage.removeItem('mobile')
+    localStorage.removeItem('email')
+    this.setState({
+      loggedIn: true,
+    });
+  }
+
+
   toggleOffcanvas() {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');
   }
@@ -11,6 +50,10 @@ class Navbar extends Component {
     document.querySelector('.right-sidebar').classList.toggle('open');
   }
   render () {
+    if (this.state.loggedIn) {
+      return <Redirect to='/user-pages/login'></Redirect>
+    }
+
     return (
       <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
@@ -44,7 +87,7 @@ class Navbar extends Component {
                     <span className="availability-status online"></span>
                   </div>
                   <div className="nav-profile-text">
-                    <p className="mb-1 text-black"><Trans>Lalit A. Sharlawar</Trans></p>
+                    <p className="mb-1 text-black"><Trans>{ this.state.username }</Trans></p>
                   </div>
                 </Dropdown.Toggle>
 
@@ -53,7 +96,7 @@ class Navbar extends Component {
                     <i className="mdi mdi-cached mr-2 text-success"></i>
                     <Trans>Activity Log</Trans>
                   </Dropdown.Item>
-                  <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()}>
+                  <Dropdown.Item href="!#" onClick={this.confirmLogout}>
                     <i className="mdi mdi-logout mr-2 text-primary"></i>
                     <Trans>Signout</Trans>
                   </Dropdown.Item>
@@ -166,20 +209,40 @@ class Navbar extends Component {
               </Dropdown>
             </li>
             <li className="nav-item nav-logout d-none d-lg-block">
-              <a className="nav-link" href="/user-pages/login" >
+              <a className="nav-link" onClick={this.confirmLogout} >
                 <i className="mdi mdi-power"></i>
               </a>
             </li>
-            <li className="nav-item nav-settings d-none d-lg-block">
+            {/* <li className="nav-item nav-settings d-none d-lg-block">
               <button type="button" className="nav-link border-0" onClick={this.toggleRightSidebar} >
                 <i className="mdi mdi-format-line-spacing"></i>
               </button>
-            </li>
+            </li> */}
           </ul>
           <button className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" onClick={this.toggleOffcanvas}>
             <span className="mdi mdi-menu"></span>
           </button>
         </div>
+        <Dialog
+        open={this.state.visible}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Logout"}
+        </DialogTitle>
+        <DialogContent style={{width: '400px'}}>
+          <DialogContentText id="alert-dialog-description">
+          Are you sure want to logout?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.confirmLogout} variant="outlined" color="error">Cancel</Button>
+          <Button onClick={this.redirect} variant="outlined" color="success">
+            logout
+          </Button>
+        </DialogActions>
+      </Dialog>
       </nav>
     );
   }
